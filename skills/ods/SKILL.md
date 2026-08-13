@@ -64,6 +64,24 @@ The primary method to run ODS is via the single native `ods` CLI binary:
 
 ---
 
+## GitHub Actions CI Gate Integration
+
+To run automated ODS verification on pull requests or pushes, reference the official reusable workflow from `open-doc-spec/ods-action`:
+
+```yaml
+jobs:
+  docs-quality-gate:
+    name: ODS Document Integrity Gate
+    uses: open-doc-spec/ods-action/.github/workflows/ods.yml@main
+    with:
+      runs-on: 'ubuntu-latest' # or 'self-hosted'
+      path: '.'                # target path to workspace root
+      doctor: true             # execute ods doctor
+      strict-fmt: true         # enforce strict formatting checks
+```
+
+---
+
 ## 3. Core Frontmatter & Key Placement Rules
 
 1. **Custom / universal keys (`description`, `name`, `author`, `reviewer`, `target_release`, `service`, `team`, `tags`)**:
