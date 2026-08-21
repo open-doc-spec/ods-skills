@@ -18,7 +18,7 @@
 #
 set -euo pipefail
 
-REPO="open-doc-spec/open-document-spec"
+REPO="open-doc-spec/ods"
 API="https://api.github.com/repos/${REPO}"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

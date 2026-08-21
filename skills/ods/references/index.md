@@ -1,5 +1,5 @@
 ---
-description: "ODS skill references catalog — deep CLI recipes & token economy guides."
+description: "ODS skill references catalog — CLI recipes, token economy, and LSP integration guides."
 tags:
   - skill
   - ods
@@ -22,6 +22,7 @@ This directory contains practical operational guides and advanced query recipes 
 |---|---|
 | **[`cli-recipes.md`](cli-recipes.md)** | Advanced CLI query recipes, Boolean search combinations, section slicing, and DAG traversal options. |
 | **[`token-economy.md`](token-economy.md)** | Token budgeting heuristics, prompt pruning strategies, and cost-reduction decision matrix (~95% savings). |
+| **[`lsp.md`](lsp.md)** | Editor JSON-RPC 2.0 Language Server (`ods lsp`) setup for Zed, VS Code, Neovim, and Helix. |
 
 ---
 
@@ -31,6 +32,7 @@ The `ods` CLI binary is self-documenting. Use the following commands for real-ti
 
 | Goal | Command |
 |---|---|
+| **Workspace Overview** | `ods overview` (alias: `ods summary`) |
 | **Schema Key Placement** | `ods schema keys` |
 | **Machine-Readable JSON Schema** | `ods schema` |
 | **Profile Heading Contracts & Policies** | `ods profile show <name>` |
@@ -43,6 +45,9 @@ The `ods` CLI binary is self-documenting. Use the following commands for real-ti
 
 Authoritative normative specifications live in the satellite repository:
 - **Repository**: [open-doc-spec/ods-spec](https://github.com/open-doc-spec/ods-spec)
+- **Format Core**: `specs/core.md`
 - **Key Dictionary**: `specs/keys.md`
 - **Context Resolution**: `specs/context.md`
 - **Profile Shapes & Key Policies**: `specs/profiles.md`
+- **Workspace Config & Marker**: `specs/indexes.md`
+- **Validation & Tooling Rules**: `specs/validation.md`

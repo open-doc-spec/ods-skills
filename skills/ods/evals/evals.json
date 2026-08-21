@@ -4,11 +4,11 @@
     {
       "id": 1,
       "prompt": "Set up ods on this machine and start watching ./docs.",
-      "expected_output": "Runs scripts/bootstrap.sh to install the release binary, verifies ./docs is an ODS workspace, then ensures the background service is running for ./docs.",
+      "expected_output": "Runs scripts/bootstrap.sh to install the release binary, verifies ./docs is an ODS workspace (root ods.toml), then ensures the background service is running for ./docs.",
       "assertions": [
         "Invokes scripts/bootstrap.sh (install/ensure) rather than building from source or cutting a release.",
-        "Checks that ./docs has a root index.md carrying `ods:` before starting the service, and runs `ods init` if it does not.",
-        "Starts the background service via `ods watch ./docs` (not a network server or port).",
+        "Checks that ./docs has a root ods.toml carrying `spec = \"0.1\"` before starting the service, and runs `ods init` if it does not.",
+        "Starts the background service via `ods start ./docs` (or `bootstrap.sh ensure ./docs`).",
         "Does not claim ods exposes an HTTP endpoint or listening port."
       ]
     },
@@ -18,7 +18,7 @@
       "expected_output": "Handles it as ordinary Markdown editing and does not engage ODS tooling, frontmatter, or the ods binary.",
       "assertions": [
         "Does NOT run any ods command, add ODS frontmatter, or start the ods service.",
-        "Does NOT treat the folder as an ODS workspace (no `ods:` root marker present)."
+        "Does NOT treat the folder as an ODS workspace (no `ods.toml` root marker present)."
       ]
     },
     {
@@ -74,11 +74,11 @@
     {
       "id": 8,
       "prompt": "We just did `git mv features/login.md features/auth-login.md` in our git-tracked ODS workspace. How do we fix the references?",
-      "expected_output": "Recommends `ods sync` to reconcile the git-tracked rename and rewrite inbound refs + indexes; notes that for non-git folders you'd instead rely on `ods watch` or `ods mv`.",
+      "expected_output": "Recommends `ods sync` to reconcile the git-tracked rename and rewrite inbound refs; notes that for manual moves on disk you'd use `ods mv`.",
       "assertions": [
         "Recommends `ods sync` for the git-tracked rename.",
         "Explains `ods sync` reconciles git-tracked renames (git status --porcelain) and rewrites references.",
-        "Notes the non-git alternative is the live watch engine (`ods watch`) or offline `ods mv`."
+        "Notes the non-git alternative is offline `ods mv`."
       ]
     },
     {
@@ -120,9 +120,9 @@
     {
       "id": 13,
       "prompt": "List which tags exist in the workspace and which docs carry the `billing` tag.",
-      "expected_output": "Uses `ods tag list` and `ods tag show billing` (or `ods tags` + find), not hand-grepping frontmatter.",
+      "expected_output": "Uses `ods tag list` and `ods tag show billing` (or `ods tag show` / `ods find --tag`), not hand-grepping frontmatter.",
       "assertions": [
-        "Recommends `ods tag list` and/or `ods tag show` (or equivalent `ods tags` / `ods find --tag`).",
+        "Recommends `ods tag list` and/or `ods tag show` (or equivalent `ods find --tag`).",
         "Does not invent a non-existent tag namespace command."
       ]
     }

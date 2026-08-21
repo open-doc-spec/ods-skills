@@ -49,7 +49,7 @@ Turn 5: Code Jump (0 extra doc tokens)
 
 | Situation | Recommended Command | Token Footprint | Why |
 |---|---|---|---|
-| **Cold start in new repo** | `ods overview` | ~80 tokens | Summarizes workspace layout, profiles, statuses, and top tags. |
+| **Cold start in new repo** | `ods overview` | ~100 tokens | Summarizes workspace layout, profiles, statuses, and top tags. |
 | **Locating a specific concept** | `ods find --tag <tag>` | ~20 tokens | Returns exact document IDs without dumping file bodies. |
 | **Need prerequisites for task** | `ods context <id> --print` | ~800 tokens | Reads target + strictly hard `depends`, pruned to max budget. |
 | **Only need the algorithm/steps**| `ods read <id> --section "Steps"` | ~150 tokens | Extracts only the matching `##` section heading. |
@@ -61,5 +61,7 @@ Turn 5: Code Jump (0 extra doc tokens)
 ## 4. Prompt Budgeting Best Practices
 
 1. **Always Set `--max-tokens`**: When using `ods context --print`, specify `--max-tokens <N>` (e.g. `2000` or `4000`) to guarantee predictable prompt budgets.
-2. **Exclude `related` by Default**: Soft references (`related:`) are for human discovery; do **not** auto-include them in agent prompts unless explicitly asked.
-3. **Avoid Graph Dumps**: Do NOT dump `ods export graph` into routine prompt context — use it only for workspace-level structural audits.
+2. **Exclude `related` by Default**: Soft references (`related:`) are for human discovery; do **not** auto-include them in agent prompts unless explicitly asked (`--include-related`).
+3. **Exclude `resources` by Default**: Static asset attachments (PDFs, binary diagrams) remain on disk; inject text/JSON schemas into prompt context via `context.load`.
+4. **Avoid Graph Dumps**: Do NOT dump `ods export graph` into routine prompt context — use it only for workspace-level structural audits.
+5. **Measure Token ROI**: Use `ods bench stats` to measure workspace token reduction and audit ROI metrics.

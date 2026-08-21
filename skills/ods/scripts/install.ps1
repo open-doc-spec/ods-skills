@@ -5,7 +5,7 @@
 #   Windows ARM64 — windows-arm64
 #
 # Usage:
-#   irm https://raw.githubusercontent.com/open-doc-spec/open-document-spec/main/src/scripts/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/open-doc-spec/ods/main/src/scripts/install.ps1 | iex
 #
 # Options via environment variables:
 #   ODS_VERSION — pin a release tag, e.g. "v0.1.0"  (default: latest; legacy ODC_VERSION still read)
@@ -21,7 +21,7 @@ $ErrorActionPreference = "Stop"
 
 $isForce = $Force -or ($env:ODS_FORCE -eq "1")
 
-$Repo = "open-doc-spec/open-document-spec"
+$Repo = "open-doc-spec/ods"
 $Api  = "https://api.github.com/repos/$Repo"
 
 function Write-Step { Write-Host "==> $($args -join ' ')" }
@@ -242,7 +242,7 @@ Write-Host "  Verify installation (in a new terminal):"
 Write-Host "    ods --version"
 Write-Host ""
 Write-Host "  Get started:"
-Write-Host "    ods init .              # make project ODS-compliant (creates root index.md)"
+Write-Host "    ods init .              # make project ODS-compliant (creates root ods.toml)"
 Write-Host "    ods setup               # set up machine background service & check workspace health"
 Write-Host "    ods lint"
 Write-Host "    ods export              # optional graph.md for AI"
