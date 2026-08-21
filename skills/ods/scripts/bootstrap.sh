@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Open Document Spec skill bootstrap — install / update the `ods` binary (optional `ods`
-# alias) and keep the background watch service running.
+# Open Document Spec skill bootstrap — install / update the `ods` binary
+# and keep the background watch service running.
 #
 # This script is self-contained: it depends only on the vendored
 # install-from-release.sh (next to it) plus `gh` (GitHub CLI) auth. It never
@@ -17,9 +17,9 @@
 #
 # Env:
 #   ODS_PREFIX    install dir for the binary (default: ~/.local/bin)
-#   ODS_REPO      GitHub repo (default: open-doc-spec/open-document-spec)
+#   ODS_REPO      GitHub repo (default: open-doc-spec/ods)
 #   ODS_VERSION   pin a release tag (default: latest)
-#   GH_TOKEN      required for the private repo (or run `gh auth login`)
+#   GH_TOKEN      required for private repos (or run `gh auth login`)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,12 +30,8 @@ log()  { printf '==> %s\n' "$*"; }
 warn() { printf 'warning: %s\n' "$*" >&2; }
 die()  { printf 'error: %s\n' "$*" >&2; exit 1; }
 
-have_cli() { command -v ods >/dev/null 2>&1 || command -v ods >/dev/null 2>&1; }
-cli_bin() {
-  if command -v ods >/dev/null 2>&1; then command -v ods
-  else command -v ods
-  fi
-}
+have_cli() { command -v ods >/dev/null 2>&1; }
+cli_bin() { command -v ods; }
 
 # Install the binary from the latest (or pinned) GitHub Release.
 cmd_install() {
@@ -67,18 +63,18 @@ cmd_update() {
     fi
   fi
   if find_workspace_root . >/dev/null 2>&1; then
-    log "running workspace & machine migration (ods upgrade --write)"
-    ods upgrade --write . 2>/dev/null || true
+    log "running workspace setup check (ods setup .)"
+    ods setup . 2>/dev/null || true
   fi
   log "now on $(ods --version)"
 }
 
-# Resolve the workspace root: walk up looking for an index.md whose frontmatter
-# carries an `ods:` key. Prints the root path on success, empty on failure.
+# Resolve the workspace root: walk up looking for an ods.toml workspace marker.
+# Prints the root path on success, empty on failure.
 find_workspace_root() {
   local dir; dir="$(cd "${1:-.}" 2>/dev/null && pwd)" || return 1
   while :; do
-    if [[ -f "${dir}/index.md" ]] && frontmatter_has_ods "${dir}/index.md"; then
+    if [[ -f "${dir}/ods.toml" ]]; then
       printf '%s\n' "${dir}"
       return 0
     fi
@@ -86,16 +82,6 @@ find_workspace_root() {
     dir="$(dirname "${dir}")"
   done
   return 1
-}
-
-# True if the file's leading YAML frontmatter block contains a top-level `ods:` key.
-frontmatter_has_ods() {
-  awk '
-    NR==1 && $0!="---" { exit 1 }        # no frontmatter at all
-    NR==1 { infm=1; next }
-    infm && $0=="---" { exit 1 }         # end of frontmatter, key not found
-    infm && /^ods[[:space:]]*:/ { exit 0 }
-  ' "$1"
 }
 
 is_git() {
@@ -109,7 +95,7 @@ cmd_check() {
     printf 'compliant=true root=%s\n' "${root}"
   else
     printf 'compliant=false root=\n'
-    printf 'hint: not an ODS workspace (no index.md with `ods:`). Run: ods init %s\n' "${path}"
+    printf 'hint: not an ODS workspace (no root ods.toml with spec). Run: ods init %s\n' "${path}"
   fi
   if is_git "${path}"; then
     printf 'git=true\n'
@@ -123,7 +109,7 @@ cmd_ensure() {
   local path="${1:-.}"
   have_cli || die "ods not installed; run: bootstrap.sh install"
   if ! find_workspace_root "${path}" >/dev/null; then
-    warn "not an ODS workspace (no index.md with \`ods:\`). Run: ods init ${path}"
+    warn "not an ODS workspace (no root ods.toml with spec). Run: ods init ${path}"
     warn "skipping service start on a non-workspace"
     return 0
   fi
